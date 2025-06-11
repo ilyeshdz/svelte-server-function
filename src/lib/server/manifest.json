@@ -1,1 +1,7 @@
-{"getUser":{"args":[],"body":"return {\nname: \"John Doe\",\nemail: \"john.doe@example.com\",\n};"}}
+{
+  "df4e9a87": {
+    "id": "df4e9a87",
+    "filePath": "$lib/server/get-user",
+    "exportName": "getUser"
+  }
+}

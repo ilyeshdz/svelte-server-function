@@ -30,20 +30,19 @@ export function svelteServerFunction(
     configureServer(server) {
       const regenerate = async () => {
         if (!options.serverFunctionGlob) return;
-        console.log('[svelte-server-functions] Regenerating manifest...');
+        console.log("[svelte-server-functions] Regenerating manifest...");
         await generateEndpointManifest(options.serverFunctionGlob);
       };
-
-      server.watcher.on('add', regenerate);
-      server.watcher.on('unlink', regenerate);
-      server.watcher.on('change', regenerate);
+    
+      server.watcher.on("add", regenerate);
+      server.watcher.on("unlink", regenerate);
+      server.watcher.on("change", regenerate);
     },
     async buildStart() {
       if (!options.serverFunctionGlob) return;
       const endpoints = await generateEndpointManifest(
         options.serverFunctionGlob
       );
-      console.log(endpoints);
     },
   };
 }

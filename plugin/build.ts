@@ -1,15 +1,18 @@
 import { SyntaxKind } from "ts-morph";
 import { tsProject } from "./tsmorph-project";
-import type { SvelteServerFunctionOptions } from "./types/config";
 import { globFiles, readFile, writeFile } from "./utils/file-system";
-import { convertMapIntoObject } from "./utils/map";
+import { createHash } from "crypto";
 
 export async function generateEndpointManifest(options: string | string[]) {
-  let endpoints: Map<string, { args: string[]; body: string }> = new Map();
+  type ManifestEntry = {
+    id: string;
+    filePath: string;
+    exportName: string;
+  };
 
-  // Normalize options to an array of glob patterns
+  const manifest: Record<string, ManifestEntry> = {};
+
   const patterns = Array.isArray(options) ? options : [options];
-  // Collect all files matching all patterns
   let allFiles: string[] = [];
   for (const pattern of patterns) {
     const files = await globFiles(pattern);
@@ -19,34 +22,33 @@ export async function generateEndpointManifest(options: string | string[]) {
   for (const file of allFiles) {
     const code = await readFile(file);
     const source = tsProject.createSourceFile(file, code, { overwrite: true });
-    source.getExportedDeclarations().forEach((value, key) => {
-      value.forEach((decl) => {
-        const fnArrows = decl.getChildrenOfKind(SyntaxKind.ArrowFunction);
-        fnArrows.forEach((arrowFn) => {
-          const varDecl = arrowFn.getFirstAncestorByKind(
-            SyntaxKind.VariableDeclaration
-          );
-          const name = varDecl?.getName() ?? "anonymousArrowFn";
-          const args = arrowFn.getParameters().map((arg) => arg.getName());
-          const body = arrowFn.getBodyText() ?? "";
-          endpoints.set(name, { args, body });
-        });
-        const fns = decl.getChildrenOfKind(SyntaxKind.FunctionDeclaration);
-        fns.forEach((fn) => {
-          const name = fn.getName() ?? "anonymousFn";
-          const args = fn.getParameters().map((arg) => arg.getName());
-          const body = fn.getBodyText() ?? "";
-          endpoints.set(name, { args, body });
-        });
-      });
+
+    source.getExportedDeclarations().forEach((decls, exportName) => {
+      for (const decl of decls) {
+        const fnDecl = decl.getFirstChildByKind(SyntaxKind.FunctionDeclaration);
+        const arrowFn = decl.getFirstChildByKind(SyntaxKind.ArrowFunction);
+
+        if (fnDecl || arrowFn) {
+          const id = createHash("sha256")
+            .update(`${file}::${exportName}`)
+            .digest("hex")
+            .slice(0, 8);
+          const filePath = file
+            .replace(/^src\/lib/, "$lib")
+            .replace(/\.ts$/, "");
+
+          manifest[id] = {
+            id,
+            filePath,
+            exportName,
+          };
+        }
+      }
     });
   }
 
   const manifestPath = "src/lib/server/manifest.json";
-  await writeFile(
-    manifestPath,
-    JSON.stringify(convertMapIntoObject(endpoints))
-  );
+  await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
 
-  return endpoints;
+  return manifest;
 }

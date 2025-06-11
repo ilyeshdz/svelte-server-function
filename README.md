@@ -42,9 +42,10 @@ Whenever you run the dev server or build your project, the plugin will automatic
 - **Contents:**
   ```json
   {
-    "getUser": {
-      "args": ["test"],
-      "body": "return { name: 'John Doe', email: 'john.doe@example.com' };"
+    "df4e9a87": {
+      "id": "df4e9a87",
+      "filePath": "$lib/server/get-user",
+      "exportName": "getUser"
     }
   }
   ```

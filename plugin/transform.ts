@@ -42,7 +42,6 @@ export function transformServerFunctions(
   });
 
   if (changed) {
-    console.log(sourceFile.getFullText());
     return {
       code: sourceFile.getFullText(),
       map: {

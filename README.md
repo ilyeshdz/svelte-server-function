@@ -31,3 +31,26 @@ This Vite plugin enables developers to:
 
    const { data, error, isPending } = getUser("123");
    ```
+
+---
+
+## 🗂 Manifest Generation
+
+Whenever you run the dev server or build your project, the plugin will automatically generate a manifest file at `src/lib/server/manifest.json`. This manifest contains metadata about all exported server functions, including their names, argument lists, and function bodies. The manifest is kept up to date with file changes, additions, or deletions in your server function files.
+
+- **Location:** `src/lib/server/manifest.json`
+- **Contents:**
+  ```json
+  {
+    "getUser": {
+      "args": ["test"],
+      "body": "return { name: 'John Doe', email: 'john.doe@example.com' };"
+    }
+  }
+  ```
+- **How it's generated:**
+  - On dev server start
+  - On build
+  - On any add/change/remove of files in your server functions directory
+
+You do not need to manually update or maintain this manifest; it is handled automatically by the plugin.

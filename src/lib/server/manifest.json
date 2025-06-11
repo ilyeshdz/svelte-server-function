@@ -1,0 +1,1 @@
+{"getUser":{"args":[],"body":"return {\nname: \"John Doe\",\nemail: \"john.doe@example.com\",\n};"}}

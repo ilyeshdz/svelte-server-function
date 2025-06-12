@@ -10,6 +10,7 @@ export function transformServerFunctions(
   const sourceFile = tsProject.createSourceFile(id, code, { overwrite: true });
 
   let changed = false;
+  let isImported = false;
 
   sourceFile.getImportDeclarations().forEach((importDecl) => {
     const moduleSpecifier = importDecl.getModuleSpecifier().getText();
@@ -32,9 +33,16 @@ export function transformServerFunctions(
               args.length > 0 ? `, ${args.join(", ")}` : ""
             })`
           );
-          importDecl.replaceWithText(
-            `import { useServerFunction } from 'virtual:server-functions/internal'`
-          );
+
+          if (!isImported) {
+            importDecl.replaceWithText(
+              `import { useServerFunction } from 'virtual:server-functions/internal'`
+            );
+            isImported = true;
+          } else {
+            importDecl.remove();
+          }
+
           changed = true;
         });
       });

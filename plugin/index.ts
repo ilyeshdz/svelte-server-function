@@ -2,7 +2,8 @@ import { parseAst, type Plugin } from "vite";
 import type { SvelteServerFunctionOptions } from "./types/config";
 import { transformServerFunctions } from "./transform";
 import { resolveVirtualModuleId, loadVirtualModule } from "./virtual-module";
-import { generateEndpointManifest } from "./build";
+import { generateEndpointManifest, setupEndpointHandler } from "./build";
+import { FileBackedCache } from "./utils/cache";
 
 /**
  * A Vite plugin that allows you to call server functions as if they were local client-side functions within SvelteKit.
@@ -13,14 +14,16 @@ export function svelteServerFunction(
     rpcEndpoint: "/_server_fns",
   }
 ): Plugin {
+  const cache = new FileBackedCache()
+
   return {
     name: "svelte-server-function",
     enforce: "pre",
     resolveId(id) {
       return resolveVirtualModuleId(id);
     },
-    load(id) {
-      return loadVirtualModule(id);
+    async load(id) {
+      return await loadVirtualModule(id, cache, options.rpcEndpoint);
     },
     transform(code, id) {
       if (id.endsWith(".svelte") || id.includes("src/routes")) {
@@ -31,7 +34,7 @@ export function svelteServerFunction(
       const regenerate = async () => {
         if (!options.serverFunctionGlob) return;
         console.log("[svelte-server-functions] Regenerating manifest...");
-        await generateEndpointManifest(options.serverFunctionGlob);
+        await generateEndpointManifest(options.serverFunctionGlob, cache);
       };
     
       server.watcher.on("add", regenerate);
@@ -41,8 +44,10 @@ export function svelteServerFunction(
     async buildStart() {
       if (!options.serverFunctionGlob) return;
       const endpoints = await generateEndpointManifest(
-        options.serverFunctionGlob
+        options.serverFunctionGlob,
+        cache
       );
+      await setupEndpointHandler(options.rpcEndpoint);
     },
   };
 }

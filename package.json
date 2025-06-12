@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "scripts": {
+    "dev:playground": "pnpm --filter playground dev",
+    "dev:plugin": "pnpm --filter vite-plugin-svelte-rpc dev",
+    "build:plugin": "pnpm --filter vite-plugin-svelte-rpc build",
+    "build:playground": "pnpm --filter playground build",
+    "build": "pnpm build:plugin && pnpm build:playground",
+    "format": "prettier --write ."
+  },
+  "packageManager": "pnpm@10.12.1",
+  "devDependencies": {
+    "@types/node": "^24.0.1",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

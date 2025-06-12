@@ -1,0 +1,17 @@
+{
+  "name": "vite-plugin-svelte-rpc",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup "
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.1",
+  "dependencies": {
+    "tsup": "^8.5.0"
+  }
+}

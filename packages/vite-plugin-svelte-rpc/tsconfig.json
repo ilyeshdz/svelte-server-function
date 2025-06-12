@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2022",
+    "allowJs": true,
+    "moduleDetection": "force",
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["src"]
+}

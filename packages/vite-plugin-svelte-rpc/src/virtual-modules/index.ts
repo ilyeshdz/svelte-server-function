@@ -21,6 +21,8 @@ export function virtualModulesPlugin(options: PluginOptions): Plugin {
                     return '';
                 case VIRTUAL_MODULE_CONFIG_ID:
                     return getVirtualModuleConfig(options);
+                default:
+                    return null;
             }
         }
     };

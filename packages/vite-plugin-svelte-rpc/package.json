@@ -4,6 +4,7 @@
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsup "
   },
@@ -13,5 +14,8 @@
   "packageManager": "pnpm@10.12.1",
   "dependencies": {
     "tsup": "^8.5.0"
+  },
+  "peerDependencies": {
+    "vite": "^6.3.5"
   }
 }

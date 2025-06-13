@@ -8,6 +8,6 @@ export default function vitePluginSvelteRpc(options: PluginOptions = defaultOpti
     const registry = new RpcRegistry();
 
     return [
-        virtualModulesPlugin()
+        virtualModulesPlugin(options)
     ]
 }

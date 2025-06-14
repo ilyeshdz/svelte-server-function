@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "dev": "concurrently --kill-others 'pnpm --filter vite-plugin-svelte-rpc dev' 'pnpm --filter playground dev'",
+    "dev": "concurrently 'pnpm --filter vite-plugin-svelte-rpc dev' 'pnpm --filter playground dev'",
     "dev:playground": "pnpm --filter playground dev",
     "dev:plugin": "pnpm --filter vite-plugin-svelte-rpc dev",
     "build:plugin": "pnpm --filter vite-plugin-svelte-rpc build",

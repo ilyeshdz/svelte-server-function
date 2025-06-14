@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "dev": "concurrently --kill-others 'pnpm --filter vite-plugin-svelte-rpc dev' 'pnpm --filter playground dev'",
     "dev:playground": "pnpm --filter playground dev",
     "dev:plugin": "pnpm --filter vite-plugin-svelte-rpc dev",
     "build:plugin": "pnpm --filter vite-plugin-svelte-rpc build",
@@ -11,6 +12,7 @@
   "packageManager": "pnpm@10.12.1",
   "devDependencies": {
     "@types/node": "^24.0.1",
+    "concurrently": "^9.1.2",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3"
   },

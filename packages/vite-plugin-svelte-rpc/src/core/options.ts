@@ -2,5 +2,5 @@ import type { PluginOptions } from "../types";
 
 export const defaultOptions: PluginOptions = {
     rpcEndpoint: '/__rpc',
-    serverPath: 'src/lib/server/**/*ts'
+    include: 'src/lib/server/**/*ts'
 }

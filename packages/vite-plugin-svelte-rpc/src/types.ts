@@ -8,10 +8,10 @@ export interface PluginOptions {
      */
     rpcEndpoint: string;
     /**
-     * The path to the server files. There should be a glob pattern to match the server files.
+     * The glob pattern to match the server files.
      * @default 'src/lib/server/** /*ts'
      */
-    serverPath: string | string[];
+    include?: string | string[];
 }
 
 /**
@@ -23,11 +23,17 @@ export interface ServerFunctionArgumentMetadata {
 }
 
 /**
- * The metadata of a server function. 
+ * The metadata of a server function.
  */
 export interface ServerFunctionMetadata {
     id: string;
     filePath: string;
     functionName: string;
     args: ServerFunctionArgumentMetadata[];
+    isDefaultExport?: boolean;
+    returnType: string;
+}
+
+export interface RegisterFunctionOptions {
+    override?: boolean;
 }

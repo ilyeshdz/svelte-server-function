@@ -1,14 +1,11 @@
 import { createHash } from 'node:crypto';
-import type { ServerFunctionMetadata } from '../types';
+import type { ServerFunctionMetadata, RegisterFunctionOptions } from '../types';
 
 export class RpcRegistry {
     private functions: Map<string, ServerFunctionMetadata> = new Map();
 
     /**
      * Generates a unique ID for a server function.
-     * @param filePath The path to the server file.
-     * @param functionName The name of the server function.
-     * @returns The generated ID.
      */
     public generateFunctionId(filePath: string, functionName: string): string {
         const data = `${filePath}::${functionName}`;
@@ -17,17 +14,33 @@ export class RpcRegistry {
 
     /**
      * Registers a server function.
-     * @param metadata The metadata of the server function.
+     * @throws If the function is already registered
      */
-    public registerFunction(metadata: ServerFunctionMetadata): void {
-        if (!metadata.id) {
-            metadata.id = this.generateFunctionId(
-                metadata.filePath,
-                metadata.functionName
-            );
+    public registerFunction(
+        metadata: Omit<ServerFunctionMetadata, 'id'>,
+        options: RegisterFunctionOptions
+    ): string {
+        const id = this.generateFunctionId(
+            metadata.filePath,
+            metadata.functionName
+        );
+
+        if (this.functions.has(id)) {
+            if (!options.override) {
+                throw new Error(
+                    `Function '${metadata.functionName}' from '${metadata.filePath}' is already registered`
+                );
+            }
         }
 
-        this.functions.set(metadata.id, metadata);
+        const functionMetadata: ServerFunctionMetadata = {
+            ...metadata,
+            id,
+            isDefaultExport: metadata.isDefaultExport ?? false
+        };
+
+        this.functions.set(id, functionMetadata);
+        return id;
     }
 
     /**
